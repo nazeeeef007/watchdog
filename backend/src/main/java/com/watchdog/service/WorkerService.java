@@ -12,6 +12,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Component
 public class WorkerService {
 
     private static final Logger log = LoggerFactory.getLogger(WorkerService.class);
@@ -46,7 +48,7 @@ public class WorkerService {
     /**
      * Workers continuously poll for and execute monitor checks.
      */
-    @Scheduled(fixedDelay = 100, timeUnit = TimeUnit.MILLISECONDS)
+    @Scheduled(fixedDelay = 2000, timeUnit = TimeUnit.MILLISECONDS)
     @Async
     @Transactional // A new transaction is started for each worker task
     public void processMonitorCheckTasks() {
