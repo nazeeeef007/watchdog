@@ -2,30 +2,24 @@
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
-# Copy only backend Maven wrapper and .mvn
-COPY backend/mvnw .
-COPY backend/.mvn .mvn
+# Copy Maven wrapper and make it executable
+COPY mvnw .
+COPY .mvn .mvn
 RUN chmod +x mvnw
 
-# Copy backend pom.xml and download dependencies
-COPY backend/pom.xml .
+# Copy pom.xml and download dependencies
+COPY pom.xml .
 RUN ./mvnw dependency:go-offline
 
-# Copy the backend source code
-COPY backend/src ./src
+# Copy the rest of the source code
+COPY src ./src
 
-# Build the Spring Boot jar (skip tests for speed)
+# Build the jar
 RUN ./mvnw clean package -DskipTests
 
 # Stage 2: Run
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
-
-# Copy the jar from the build stage
 COPY --from=build /app/target/*.jar app.jar
-
-# Expose the port your Spring Boot app listens on
 EXPOSE 8080
-
-# Run the Spring Boot app
 ENTRYPOINT ["java", "-jar", "app.jar"]
