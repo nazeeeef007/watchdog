@@ -3,11 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Button } from './ui/button';
 import { Footer } from './Footer';
-import { LogOut, LayoutDashboard, PlusCircle, AlertCircle, View } from 'lucide-react';
+import { LogOut, LayoutDashboard, PlusCircle,  View } from 'lucide-react';
 import watchdogLogo from '../assets/watchdog.png';
 
 interface MainLayoutProps {
   children: ReactNode;
+  onLogout?: () => void; // optional, or remove `?` if required
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {

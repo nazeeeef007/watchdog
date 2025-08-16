@@ -4,7 +4,6 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useMonitorChecks } from "@/hooks/useMonitorChecks";
 import type { MonitorCheckDTO } from "@/types/MonitorCheckDTO";
-import type { ErrorCategory } from "@/types/ErrorCategory";
 import { MainLayout } from "@/components/MainLayout";
 import { useAuth } from "@/context/AuthContext";
 
@@ -28,22 +27,7 @@ const StatusBadge: React.FC<{ isUp: boolean | undefined }> = ({ isUp }) => {
   return <span className={`${base} ${color}`}>{getStatusLabel(isUp)}</span>;
 };
 
-/* Error category badge — light variant */
-const mapErrorColorLight = (category?: ErrorCategory) => {
-  if (!category || category === "NONE") return "bg-gray-100 text-gray-700";
-  switch (category) {
-    case "HTTP_CLIENT_ERROR": return "bg-yellow-100 text-yellow-800";
-    case "HTTP_SERVER_ERROR": return "bg-red-100 text-red-800";
-    case "NETWORK_ERROR": return "bg-red-200 text-red-900";
-    case "TIMEOUT_ERROR": return "bg-orange-100 text-orange-800";
-    case "SSL_ERROR": return "bg-purple-100 text-purple-800";
-    case "CONTENT_MISMATCH": return "bg-indigo-100 text-indigo-800";
-    default: return "bg-gray-100 text-gray-700";
-  }
-};
-const ErrorCategoryBadge: React.FC<{ category?: ErrorCategory }> = ({ category }) => (
-  <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${mapErrorColorLight(category)}`}>{category ?? "NONE"}</span>
-);
+
 
 /* Light spinner */
 const LoadingSpinner: React.FC<{ size?: number }> = ({ size = 8 }) => (
