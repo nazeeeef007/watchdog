@@ -1,0 +1,1 @@
+export type Page = 'landing' | 'login' | 'register' | 'dashboard' | 'createMonitor';
