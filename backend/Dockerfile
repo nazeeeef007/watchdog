@@ -1,33 +1,31 @@
-# Use Eclipse Temurin (OpenJDK) Java 17 as base image
+# Stage 1: Build
 FROM eclipse-temurin:17-jdk-alpine AS build
-
-# Set working directory
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first (for dependency caching)
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
+# Copy only backend Maven wrapper and .mvn
+COPY backend/mvnw .
+COPY backend/.mvn .mvn
+RUN chmod +x mvnw
 
-# Download dependencies (this layer is cached if pom.xml hasn’t changed)
+# Copy backend pom.xml and download dependencies
+COPY backend/pom.xml .
 RUN ./mvnw dependency:go-offline
 
-# Copy the rest of the source
-COPY src src
+# Copy the backend source code
+COPY backend/src ./src
 
-# Package the Spring Boot app (creates JAR inside /app/target/)
+# Build the Spring Boot jar (skip tests for speed)
 RUN ./mvnw clean package -DskipTests
 
-# Final runtime image
+# Stage 2: Run
 FROM eclipse-temurin:17-jdk-alpine
-
 WORKDIR /app
 
-# Copy the packaged JAR into the runtime container
+# Copy the jar from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8080
+# Expose the port your Spring Boot app listens on
 EXPOSE 8080
 
-# Run the application
+# Run the Spring Boot app
 ENTRYPOINT ["java", "-jar", "app.jar"]
